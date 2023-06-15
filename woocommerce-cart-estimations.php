@@ -391,3 +391,98 @@ if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
 	}
 }
 add_action( 'wp_ajax_woocommerce_cart_estimations_pdf_request', 'woocommerce_cart_estimations_pdf_request' );
+
+if ( ! function_exists( 'woocommerce_cart_estimations_create_pdf' ) ) {
+	/**
+	 * Function to create pdf estimation file from cart contents.
+	 *
+	 * @since  1.0.0
+	 * @param  string $file_name The name of the output file, by default will be the post name.
+	 * @return string The pdf file url if success or error message.
+	 */
+	function woocommerce_cart_estimations_create_pdf( $file_name = '' ) {
+		ob_clean();
+		ob_start();
+		?>
+		<div class="pdf-container">
+			<div >
+				<div class="pdf-first-page-title">
+					<P>
+						<?php _e( 'File title', PLUGIN_SLUG ); ?>
+					</P>
+				</div><!-- title -->
+				<div class="pdf-first-page-subtitle">
+					<P>
+						<?php _e( 'File subtitle', PLUGIN_SLUG ); ?>
+					</P>
+				</div><!-- subtitle -->
+				<div class="pdf-first-page-date">
+					<?php
+					$date = date_create();
+					echo esc_html( date_format( $date, 'd | m | y' ) ); ?>
+				</div><!--  .due date -->
+			</div>
+			<table class="pdf-table-container">
+				<?php
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item) :
+					$_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+
+					if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 ) {
+						echo sprintf(
+							'<tr><td class="thumbnail">%s</td><td class="name"></td><td class="price"></td><td class="quantity"></td></tr><td class="subtotal"></td>',
+							$_product->get_image('thumbnail'),
+							$_product->get_name(),
+							wc_price($_product->get_price()),
+							woocommerce_quantity_input(
+								array(
+									'input_name'    => "cart[{$cart_item_key}][qty]",
+									'input_value'   => $cart_item['quantity'],
+									'max_value'     => $_product->get_max_purchase_quantity(),
+									'min_value'     => '0',
+									'product_name'  => $_product->get_name(),
+								),
+								$_product,
+								false
+							),
+							wc_price( WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ) ) 
+						);
+					}
+				endforeach;
+				?>
+			</table>
+		</div>
+		<?php
+		$output = ob_get_clean();
+
+		$root_path          = plugin_dir_path( __FILE__ );
+		$autoload_file_path = $root_path . 'lib/vendor/autoload.php';
+		$pdf_path           = $root_path . 'public/pdfs/';
+
+		if ( file_exists( $autoload_file_path ) ) :
+			include_once $autoload_file_path;
+			$dompdf = new Dompdf\Dompdf();
+			$dompdf->loadHtml( $output );
+			$dompdf->setPaper( 'letter', 'portrait' );
+			$dompdf->render();
+			$pdf_output = $dompdf->output();
+			$file_name = ( '' !== $file_name ) ? $file_name : time();
+			$full_file_path = $pdf_path . $file_name . '.pdf';
+
+			if ( ! is_dir( $pdf_path ) ) :
+				mkdir( $pdf_path, 0755, true );
+			endif;
+
+			if ( file_exists( $full_file_path ) ) :
+				unlink( $full_file_path );
+			endif;
+
+			if ( file_put_contents(
+				$full_file_path,
+				$pdf_output
+			) ) :
+				return plugin_dir_url( __FILE__ ) . 'public/pdfs/' . $file_name . '.pdf';
+			endif;
+		endif;
+		return false;
+	}
+}
