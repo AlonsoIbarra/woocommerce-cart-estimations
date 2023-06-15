@@ -48,6 +48,14 @@ define( 'PLUGIN_NAME', 'Woocommerce cart estimations' );
 define( 'PLUGIN_SLUG', 'woocommerce-cart-estimations' );
 
 /**
+ * Flag to disable custom behabor for woocommerce cart.
+ */
+$plugin_options = get_option( 'woocommerce_cart_estimations_options' );
+if ( isset( $plugin_options['disable_plugin_behavor'] ) ) {
+	define( 'DISABLE_PLUGIN_BEHAVOR', boolval( $plugin_options['disable_plugin_behavor'] ) );
+}
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-woocommerce-cart-estimations-activator.php
  */
@@ -116,6 +124,15 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 
 		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
 		add_settings_field(
+			'woocommerce_cart_estimations_disable_plugin_behavor',
+			__( 'Desabilitar configuraciones de ' . PLUGIN_NAME, PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_disable_plugin_behavor_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
 			'woocommerce_cart_estimations_add_to_cart_label',
 			__( 'Texto de botón "agregar a carrito"', PLUGIN_SLUG ),
 			'woocommerce_cart_estimations_add_to_cart_label_callback',
@@ -141,8 +158,23 @@ if ( !function_exists( 'woocommerce_cart_estimations_section_developers_instruct
 	}
 }
 
+if ( !function_exists( 'woocommerce_cart_estimations_disable_plugin_behavor_callback' ) ) {
+	/**
+	 * Render controls to let the user disable plugin customizartions for woocommerce cart.
+	 */
+	function woocommerce_cart_estimations_disable_plugin_behavor_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['disable_plugin_behavor'] ) ) ? checked( true, boolval( $options['disable_plugin_behavor'] ), false ) : '';
+		?>
+		<input type="checkbox" name="woocommerce_cart_estimations_options[disable_plugin_behavor]" id="woocommerce_cart_estimations_options[disable_plugin_behavor]" <?php echo esc_html( $checked ); ?>>
+		<p class="description" style="color:red;">
+			<?php echo __( 'Esta opcion permite deshabilitar el comportamiento personalizado para woocommerce sin tener que deshabilitar el plugin.', PLUGIN_SLUG ); ?>
+		</p>
+		<?php
+	}
+}
+
 if ( !function_exists( 'woocommerce_cart_estimations_add_to_cart_label_callback' ) ) {
-	
 	/**
 	 * Render controls to update 'Add to cart' button text field callback.
 	 */
