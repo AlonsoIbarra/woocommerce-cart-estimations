@@ -113,6 +113,15 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 			'woocommerce_cart_estimations_section_developers_instructions',
 			'woocommerce_cart_estimations'
 		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_add_to_cart_label',
+			__( 'Texto de botón "agregar a carrito"', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_add_to_cart_label_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
 	}
 	add_action( 'admin_init', 'woocommerce_cart_estimations_settings_init' );
 }
@@ -127,6 +136,24 @@ if ( !function_exists( 'woocommerce_cart_estimations_section_developers_instruct
 		?>
 		<p>
 			<?php esc_html_e( 'Sección para personalizar la vista y el comportamiento del botón de carrito de Woocommerce.', PLUGIN_SLUG ); ?>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_add_to_cart_label_callback' ) ) {
+	
+	/**
+	 * Render controls to update 'Add to cart' button text field callback.
+	 */
+	function woocommerce_cart_estimations_add_to_cart_label_callback() {
+		// Get the value of the setting we've registered with register_setting()
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		?>
+		<input type="text" name="woocommerce_cart_estimations_options[add_to_cart_text]" id="woocommerce_cart_estimations_options[add_to_cart_text]" value="<?php echo $options['add_to_cart_text']; ?>">
+
+		<p class="description">
+			<?php echo __( 'Este texto aparecera en el botón para agregar un producto simple a carrito.', PLUGIN_SLUG ); ?>
 		</p>
 		<?php
 	}
@@ -151,8 +178,6 @@ if ( !function_exists( 'woocommerce_cart_estimations_options_page' ) ) {
 	 */
 	add_action( 'admin_menu', 'woocommerce_cart_estimations_options_page', 0 );
 }
-
-
 
 if ( !function_exists( 'woocommerce_cart_estimations_options_page_html' ) ) {
 	/**
