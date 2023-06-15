@@ -146,6 +146,15 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 			'woocommerce_cart_estimations',
 			'woocommerce_cart_estimations_section_developers'
 		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_empty_cart_after_chekout',
+			__( 'Vaciar carrito al continuar', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_empty_cart_after_chekout_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
 	}
 	add_action( 'admin_init', 'woocommerce_cart_estimations_settings_init' );
 }
@@ -210,6 +219,22 @@ if ( !function_exists( 'woocommerce_cart_estimations_checkout_button_text_callba
 
 		<p class="description">
 			<?php echo __( 'Este texto aparecerá en el botón para finalizar compra en la página de carrito.', PLUGIN_SLUG ); ?>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_empty_cart_after_chekout_callback' ) ) {
+	/**
+	 * Render controls to update 'empty_cart_after_chekout' settings option.
+	 */
+	function woocommerce_cart_estimations_empty_cart_after_chekout_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['empty_cart_after_chekout'] ) ) ? checked( true, boolval( $options['empty_cart_after_chekout'] ), false ) : '';
+		?>
+		<input type="checkbox" name="woocommerce_cart_estimations_options[empty_cart_after_chekout]" id="woocommerce_cart_estimations_options[empty_cart_after_chekout]" <?php echo esc_html( $checked ); ?>>
+		<p class="description">
+			<?php echo __( 'Vaciar carrito despues de seleccionar botón de continuar.', PLUGIN_SLUG ); ?>
 		</p>
 		<?php
 	}
