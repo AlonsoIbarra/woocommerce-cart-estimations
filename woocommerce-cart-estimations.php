@@ -207,3 +207,14 @@ if ( !function_exists( 'woocommerce_cart_estimations_options_page_html' ) ) {
 		<?php
 	}
 }
+
+if ( !function_exists( 'wo_cart_estimations_custom_add_to_cart_text' )) {
+	/**
+	 * This function over writes woocommerce_product_single_add_to_cart_text for custom 'add to cart' button text.
+	 */
+	function wo_cart_estimations_custom_add_to_cart_text() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		return __( $options['add_to_cart_text'], 'woocommerce-cart-estimations' ); 
+	}
+	add_filter( 'woocommerce_product_add_to_cart_text', 'wo_cart_estimations_custom_add_to_cart_text' ); 
+}
