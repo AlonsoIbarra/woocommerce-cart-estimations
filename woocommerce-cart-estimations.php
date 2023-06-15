@@ -374,6 +374,11 @@ if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
 		$response = woocommerce_cart_estimations_create_pdf();
 		if ( $response ) :
 			if ( str_contains( $response, 'http' ) ) :
+				$options = get_option( 'woocommerce_cart_estimations_options' );
+				if ( boolval( $options['empty_cart_after_chekout'] ) ){
+					// Remove all cart items.
+					WC()->cart->empty_cart();
+				}
 				wp_send_json_success( $response );
 			endif;
 			wp_send_json_error(
