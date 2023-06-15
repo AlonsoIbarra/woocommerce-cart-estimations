@@ -51,9 +51,7 @@ define( 'PLUGIN_SLUG', 'woocommerce-cart-estimations' );
  * Flag to disable custom behabor for woocommerce cart.
  */
 $plugin_options = get_option( 'woocommerce_cart_estimations_options' );
-if ( isset( $plugin_options['disable_plugin_behavor'] ) ) {
-	define( 'DISABLE_PLUGIN_BEHAVOR', boolval( $plugin_options['disable_plugin_behavor'] ) );
-}
+define( 'DISABLE_PLUGIN_BEHAVOR', boolval( isset( $plugin_options['disable_plugin_behavor'] ) ? $plugin_options['disable_plugin_behavor'] : false ) );
 
 /**
  * The code that runs during plugin activation.
