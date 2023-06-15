@@ -300,3 +300,47 @@ if ( !function_exists( 'woocommerce_cart_estimation_change_checkout_button' ) &&
 	}
 	add_action( 'woocommerce_proceed_to_checkout', 'woocommerce_cart_estimation_change_checkout_button' );
 }
+
+
+if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
+	/**
+	 * Function to proccess data and create pdf.
+	 *
+	 * @since    1.0.0
+	 */
+	function woocommerce_cart_estimations_pdf_request() {
+
+		if ( ! isset( $_POST['key'] ) || '' === $_POST['key'] ) {
+			wp_send_json_error(
+				__( 'Acceso no permitido.', PLUGIN_SLUG )
+			);
+		}
+
+		$key = sanitize_text_field( wp_unslash( $_POST['key'] ) );
+		if ( ! wp_verify_nonce( $key, 'key' ) ) {
+			wp_send_json_error(
+				__( 'Petición incorrecta, actualice la pagina e intente nuevamente.', PLUGIN_SLUG )
+			);
+		}
+
+		if ( ! wp_doing_ajax() ) {
+			wp_send_json_error(
+				__( 'Esta operación solo puede ser usada mediante AJAX.', PLUGIN_SLUG )
+			);
+		}
+
+		$response = woocommerce_cart_estimations_create_pdf();
+		if ( $response ) :
+			if ( str_contains( $response, 'http' ) ) :
+				wp_send_json_success( $response );
+			endif;
+			wp_send_json_error(
+				$response
+			);
+		endif;
+		wp_send_json_error(
+			__( 'Ocurrio un error al general el archivo PDF, contacta al administrador.', PLUGIN_SLUG )
+		);
+	}
+}
+add_action( 'wp_ajax_woocommerce_cart_estimations_pdf_request', 'woocommerce_cart_estimations_pdf_request' );
