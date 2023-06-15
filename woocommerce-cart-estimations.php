@@ -319,13 +319,30 @@ if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
 		$key = sanitize_text_field( wp_unslash( $_POST['key'] ) );
 		if ( ! wp_verify_nonce( $key, 'key' ) ) {
 			wp_send_json_error(
-				__( 'Petición incorrecta, actualice la pagina e intente nuevamente.', PLUGIN_SLUG )
+				__( 'Petición incorrecta, actualice la página e intente nuevamente.', PLUGIN_SLUG )
 			);
 		}
 
 		if ( ! wp_doing_ajax() ) {
 			wp_send_json_error(
-				__( 'Esta operación solo puede ser usada mediante AJAX.', PLUGIN_SLUG )
+				__( 'Esta operación sólo puede ser usada mediante AJAX.', PLUGIN_SLUG )
+			);
+		}
+
+		if ( is_null( WC()->cart ) ) {
+			wp_send_json_error(
+				sprintf(
+					'%s',
+					__( 'Petición incorrecta, actualice la página e intente nuevamente.', PLUGIN_SLUG )
+				)
+			);
+		}
+		if ( WC()->cart->is_empty() ) {
+			wp_send_json_error(
+				sprintf(
+					'%s',
+					__( 'Tu carrito se encuentra vacio.', PLUGIN_SLUG )
+				)
 			);
 		}
 
