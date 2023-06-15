@@ -98,6 +98,14 @@ class Woocommerce_Cart_Estimations_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/woocommerce-cart-estimations-public.js', array( 'jquery' ), $this->version, false );
 
+		wp_localize_script(
+			$this->plugin_name,
+			'WoocommerceCartEstimationsAjaxRequests',
+			array(
+				'url' => admin_url( 'admin-ajax.php' ),
+				'key' => wp_create_nonce( 'key' ),
+			)
+		);
 	}
 
 }
