@@ -293,7 +293,7 @@ if ( !function_exists( 'woocommerce_cart_estimation_change_checkout_button' ) &&
 	function woocommerce_cart_estimation_change_checkout_button(){
 		$options = get_option( 'woocommerce_cart_estimations_options' );
         ?>
-        <a href="#" class="checkout-button button alt wc-forward">
+        <a href="#" id="woocommerce_cart_estimations_checkout_button" class="checkout-button button alt wc-forward">
 			<?php _e( $options['checkout_button_text'], PLUGIN_SLUG ); ?>
 		</a>
         <?php   

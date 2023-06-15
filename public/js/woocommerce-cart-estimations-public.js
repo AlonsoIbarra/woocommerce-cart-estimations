@@ -29,4 +29,29 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	$(document).ready(function() {
+		// Send request to create PDF.
+		$('#woocommerce_cart_estimations_checkout_button').on( 'click', function(event){
+			event.preventDefault();
+			$.ajax({
+				type: "POST",
+				url: WoocommerceCartEstimationsAjaxRequests.url,
+				data: {
+					key: WoocommerceCartEstimationsAjaxRequests.key,
+					action: 'woocommerce_cart_estimations_pdf_request',
+				},
+				success: function(response){
+					if ( response.success ){
+						$('#woocommerce_cart_estimations_checkout_button').remove();
+						window.open(
+							response.data,
+							'_self'
+						); 
+					} else {
+						alert(response.data);
+					}
+				}
+			});
+		});
+	});
 })( jQuery );
