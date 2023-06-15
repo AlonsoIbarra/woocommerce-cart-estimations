@@ -137,6 +137,15 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 			'woocommerce_cart_estimations',
 			'woocommerce_cart_estimations_section_developers'
 		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_checkout_button_text',
+			__( 'Texto de botón "finalizar compra"', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_checkout_button_text_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
 	}
 	add_action( 'admin_init', 'woocommerce_cart_estimations_settings_init' );
 }
@@ -184,6 +193,23 @@ if ( !function_exists( 'woocommerce_cart_estimations_add_to_cart_label_callback'
 
 		<p class="description">
 			<?php echo __( 'Este texto aparecera en el botón para agregar un producto simple a carrito.', PLUGIN_SLUG ); ?>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_checkout_button_text_callback' ) ) {
+	/**
+	 * Render controls to update 'Checkout' cart button text field.
+	 */
+	function woocommerce_cart_estimations_checkout_button_text_callback() {
+		// Get the value of the setting we've registered with register_setting()
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		?>
+		<input type="text" name="woocommerce_cart_estimations_options[checkout_button_text]" id="woocommerce_cart_estimations_options[checkout_button_text]" value="<?php echo $options['checkout_button_text']; ?>">
+
+		<p class="description">
+			<?php echo __( 'Este texto aparecerá en el botón para finalizar compra en la página de carrito.', PLUGIN_SLUG ); ?>
 		</p>
 		<?php
 	}
