@@ -275,3 +275,28 @@ if ( !function_exists( 'wo_cart_estimations_custom_add_to_cart_text' ) && ! DISA
 	add_filter( 'woocommerce_product_add_to_cart_text', 'wo_cart_estimations_custom_add_to_cart_text' ); 
 	add_filter( 'woocommerce_product_single_add_to_cart_text', 'wo_cart_estimations_custom_add_to_cart_text' );
 }
+
+if ( ! function_exists( 'woocommerce_cart_remove_woocommerce_proceed_to_checkout' ) && ! DISABLE_PLUGIN_BEHAVOR ) {
+	/**
+	 * Function to delete checkout button from cart page.
+	 */
+	function woocommerce_cart_remove_woocommerce_proceed_to_checkout() {
+		remove_action('woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20);
+	}
+	add_action('init', 'woocommerce_cart_remove_woocommerce_proceed_to_checkout');
+}
+
+if ( !function_exists( 'woocommerce_cart_estimation_change_checkout_button' ) && ! DISABLE_PLUGIN_BEHAVOR ) {
+	/**
+	 * This function add html code for checkout cart section using woocommerce_proceed_to_checkout hook.
+	 */
+	function woocommerce_cart_estimation_change_checkout_button(){
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+        ?>
+        <a href="#" class="checkout-button button alt wc-forward">
+			<?php _e( $options['checkout_button_text'], PLUGIN_SLUG ); ?>
+		</a>
+        <?php   
+	}
+	add_action( 'woocommerce_proceed_to_checkout', 'woocommerce_cart_estimation_change_checkout_button' );
+}
