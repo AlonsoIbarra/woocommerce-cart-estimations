@@ -98,6 +98,28 @@ function run_woocommerce_cart_estimations() {
 
 run_woocommerce_cart_estimations();
 
+/**
+ * Add validation for Woocommerce dependency.
+ */
+ if ( ! in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	echo sprintf(
+		__(
+			'<div class="error"><p><strong>%s</strong> %s <a href="%s">%s</a>.</p></div>',
+			PLUGIN_SLUG
+		),
+		PLUGIN_NAME,
+		__(
+			'requiere que WooCommerce esté activo. Por favor,',
+			PLUGIN_SLUG
+		),
+		'plugins.php?action=activate&plugin=woocommerce%2Fwoocommerce.php&plugin_status=all&paged=1&s&_wpnonce=00182d052a',
+		__(
+			'activa WooCommerce',
+			PLUGIN_SLUG
+		)
+	);
+}
+
 if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 	/**
 	 * custom option and settings
@@ -325,7 +347,6 @@ if ( !function_exists( 'woocommerce_cart_estimation_change_checkout_button' ) &&
 	}
 	add_action( 'woocommerce_proceed_to_checkout', 'woocommerce_cart_estimation_change_checkout_button' );
 }
-
 
 if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
 	/**
