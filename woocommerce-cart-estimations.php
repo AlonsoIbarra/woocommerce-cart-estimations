@@ -186,6 +186,33 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 			'woocommerce_cart_estimations',
 			'woocommerce_cart_estimations_section_developers'
 		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_set_customer_name_mandatory',
+			__( 'Marcar como obligatorio el nombre completo del cliente', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_set_customer_name_mandatory_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_set_customer_email_mandatory',
+			__( 'Marcar como obligatorio el correo electrónico del cliente', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_set_customer_email_mandatory_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_set_customer_phone_mandatory',
+			__( 'Marcar como obligatorio el número telefónico del cliente', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_set_customer_phone_mandatory_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
 	}
 	add_action( 'admin_init', 'woocommerce_cart_estimations_settings_init' );
 }
@@ -284,6 +311,96 @@ if ( !function_exists( 'woocommerce_cart_estimations_create_order_after_chekout_
 			<?php echo __( 'Crear una orden al seleccionar botón de continuar.', PLUGIN_SLUG ); ?>
 			<br>
 			<small><?php echo __( 'Se pedirá de manera opcional el nombre completo, teléfono y correo electrónico al cliente.', PLUGIN_SLUG ); ?></small>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_set_customer_name_mandatory_callback' ) ) {
+	/**
+	 * Render controls to update 'set_customer_name_mandatory' settings option.
+	 */
+	function woocommerce_cart_estimations_set_customer_name_mandatory_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['set_customer_name_mandatory'] ) ) ? checked( true, boolval( $options['set_customer_name_mandatory'] ), false ) : '';
+		$disabled = ! isset( $options['create_order_after_chekout'] ) ? 'disabled' : '';
+		?>
+		<input
+			type="checkbox"
+			name="woocommerce_cart_estimations_options[set_customer_name_mandatory]"
+			id="woocommerce_cart_estimations_options[set_customer_name_mandatory]"
+			<?php echo esc_html( $checked ); ?>
+			<?php echo esc_html( $disabled); ?>
+		>
+		<p class="description">
+			<small>
+				<?php
+				echo __(
+					'Al generar una order se le requerira o no al cliente que ingrese su nombre completo.',
+					PLUGIN_SLUG
+				);
+				?>
+			</small>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_set_customer_phone_mandatory_callback' ) ) {
+	/**
+	 * Render controls to update 'set_customer_phone_mandatory' settings option.
+	 */
+	function woocommerce_cart_estimations_set_customer_phone_mandatory_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['set_customer_phone_mandatory'] ) ) ? checked( true, boolval( $options['set_customer_phone_mandatory'] ), false ) : '';
+		$disabled = ! isset( $options['create_order_after_chekout'] ) ? 'disabled' : '';
+		?>
+		<input
+			type="checkbox"
+			name="woocommerce_cart_estimations_options[set_customer_phone_mandatory]"
+			id="woocommerce_cart_estimations_options[set_customer_phone_mandatory]"
+			<?php echo esc_html( $checked ); ?>
+			<?php echo esc_html( $disabled); ?>
+		>
+		<p class="description">
+			<small>
+				<?php
+				echo __(
+					'Al generar una order se le requerira o no al cliente que ingrese su número de teléfono.',
+					PLUGIN_SLUG
+				);
+				?>
+			</small>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_set_customer_email_mandatory_callback' ) ) {
+	/**
+	 * Render controls to update 'set_customer_email_mandatory' settings option.
+	 */
+	function woocommerce_cart_estimations_set_customer_email_mandatory_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['set_customer_email_mandatory'] ) ) ? checked( true, boolval( $options['set_customer_email_mandatory'] ), false ) : '';
+		$disabled = ! isset( $options['create_order_after_chekout'] ) ? 'disabled' : '';
+		?>
+		<input
+			type="checkbox"
+			name="woocommerce_cart_estimations_options[set_customer_email_mandatory]"
+			id="woocommerce_cart_estimations_options[set_customer_email_mandatory]"
+			<?php echo esc_html( $checked ); ?>
+			<?php echo esc_html( $disabled); ?>
+		>
+		<p class="description">
+			<small>
+				<?php
+				echo __(
+					'Al generar una order se le requerira o no al cliente que ingrese su correo electrónico.',
+					PLUGIN_SLUG
+				);
+				?>
+			</small>
 		</p>
 		<?php
 	}
