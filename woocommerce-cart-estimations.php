@@ -483,8 +483,58 @@ if ( !function_exists( 'woocommerce_cart_estimation_change_checkout_button' ) &&
 	 */
 	function woocommerce_cart_estimation_change_checkout_button(){
 		$options = get_option( 'woocommerce_cart_estimations_options' );
-        ?>
-        <a href="#" id="woocommerce_cart_estimations_checkout_button" class="checkout-button button alt wc-forward">
+		$full_name_required = ( isset($options['set_customer_name_mandatory'] ) ) ? 'required':'';
+		$email_required = ( isset($options['set_customer_email_mandatory'] ) ) ? 'required':'';
+		$phone_required = ( isset($options['set_customer_phone_mandatory'] ) ) ? 'required':'';
+
+		if ( isset( $options['create_order_after_chekout'] ) && boolval( $options['create_order_after_chekout'] ) ) : ?>
+			<div class="woocommerce-billing-fields">
+				<h4>
+					<?php echo __( 'Dejanos conocerte', PLUGIN_SLUG); ?>
+				</h4>
+				<div class="woocommerce-billing-fields__field-wrapper">
+					<table>
+						<tr>
+							<td>
+								<label for="billing_first_name" class="">
+									<?php echo __( 'Nombre completo:', PLUGIN_SLUG); ?>
+								</label>
+							</td>
+							<td>
+								<span class="woocommerce-input-wrapper">
+									<input type="text" class="input-text <?= $full_name_required ?>" name="billing_first_name" id="billing_first_name" placeholder="<?php echo __( 'Nombre completo', PLUGIN_SLUG); ?>" value="" >
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="billing_phone" class="">
+									<?php echo __( 'Teléfono:', PLUGIN_SLUG); ?>
+								</label>
+							</td>
+							<td>
+								<span class="woocommerce-input-wrapper">
+									<input type="tel" class="input-text <?= $phone_required ?>" name="billing_phone" id="billing_phone" placeholder="<?php echo __( 'Teléfono', PLUGIN_SLUG); ?>" value="" autocomplete="tel">
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="billing_email" class="">
+									<?php echo __( 'Correo electrónico:', PLUGIN_SLUG); ?>
+								</label>
+							</td>
+							<td>
+								<span class="woocommerce-input-wrapper">
+									<input type="email" class="input-text <?= $email_required ?>" name="billing_email" id="billing_email" placeholder="<?php echo __( 'Correo electrónico', PLUGIN_SLUG); ?>" value="" autocomplete="email">
+								</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		<?php endif; ?>
+        <a id="woocommerce_cart_estimations_checkout_button" class="checkout-button button alt wc-forward">
 			<?php _e( $options['checkout_button_text'], PLUGIN_SLUG ); ?>
 		</a>
         <?php   
