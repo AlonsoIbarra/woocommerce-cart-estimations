@@ -177,6 +177,15 @@ if ( !function_exists( 'woocommerce_cart_estimations_settings_init' ) ) {
 			'woocommerce_cart_estimations',
 			'woocommerce_cart_estimations_section_developers'
 		);
+
+		// Register a new field in the "woocommerce_cart_estimations_section_developers" section.
+		add_settings_field(
+			'woocommerce_cart_estimations_create_order_after_chekout',
+			__( 'Crear orden al continuar', PLUGIN_SLUG ),
+			'woocommerce_cart_estimations_create_order_after_chekout_callback',
+			'woocommerce_cart_estimations',
+			'woocommerce_cart_estimations_section_developers'
+		);
 	}
 	add_action( 'admin_init', 'woocommerce_cart_estimations_settings_init' );
 }
@@ -206,7 +215,7 @@ if ( !function_exists( 'woocommerce_cart_estimations_disable_plugin_behavor_call
 		?>
 		<input type="checkbox" name="woocommerce_cart_estimations_options[disable_plugin_behavor]" id="woocommerce_cart_estimations_options[disable_plugin_behavor]" <?php echo esc_html( $checked ); ?>>
 		<p class="description" style="color:red;">
-			<?php echo __( 'Esta opcion permite deshabilitar el comportamiento personalizado para woocommerce sin tener que deshabilitar el plugin.', PLUGIN_SLUG ); ?>
+			<?php echo __( 'Esta opción permite deshabilitar el comportamiento personalizado para woocommerce sin tener que deshabilitar el plugin.', PLUGIN_SLUG ); ?>
 		</p>
 		<?php
 	}
@@ -223,7 +232,7 @@ if ( !function_exists( 'woocommerce_cart_estimations_add_to_cart_label_callback'
 		<input type="text" name="woocommerce_cart_estimations_options[add_to_cart_text]" id="woocommerce_cart_estimations_options[add_to_cart_text]" value="<?php echo $options['add_to_cart_text']; ?>">
 
 		<p class="description">
-			<?php echo __( 'Este texto aparecera en el botón para agregar un producto simple a carrito.', PLUGIN_SLUG ); ?>
+			<?php echo __( 'Este texto aparecerá en el botón para agregar un producto simple a carrito.', PLUGIN_SLUG ); ?>
 		</p>
 		<?php
 	}
@@ -256,7 +265,25 @@ if ( !function_exists( 'woocommerce_cart_estimations_empty_cart_after_chekout_ca
 		?>
 		<input type="checkbox" name="woocommerce_cart_estimations_options[empty_cart_after_chekout]" id="woocommerce_cart_estimations_options[empty_cart_after_chekout]" <?php echo esc_html( $checked ); ?>>
 		<p class="description">
-			<?php echo __( 'Vaciar carrito despues de seleccionar botón de continuar.', PLUGIN_SLUG ); ?>
+			<?php echo __( 'Vaciar carrito al seleccionar botón de continuar.', PLUGIN_SLUG ); ?>
+		</p>
+		<?php
+	}
+}
+
+if ( !function_exists( 'woocommerce_cart_estimations_create_order_after_chekout_callback' ) ) {
+	/**
+	 * Render controls to update 'create_order_after_chekout' settings option.
+	 */
+	function woocommerce_cart_estimations_create_order_after_chekout_callback() {
+		$options = get_option( 'woocommerce_cart_estimations_options' );
+		$checked = ( isset( $options['create_order_after_chekout'] ) ) ? checked( true, boolval( $options['create_order_after_chekout'] ), false ) : '';
+		?>
+		<input type="checkbox" name="woocommerce_cart_estimations_options[create_order_after_chekout]" id="woocommerce_cart_estimations_options[create_order_after_chekout]" <?php echo esc_html( $checked ); ?>>
+		<p class="description">
+			<?php echo __( 'Crear una orden al seleccionar botón de continuar.', PLUGIN_SLUG ); ?>
+			<br>
+			<small><?php echo __( 'Se pedirá de manera opcional el nombre completo, teléfono y correo electrónico al cliente.', PLUGIN_SLUG ); ?></small>
 		</p>
 		<?php
 	}
