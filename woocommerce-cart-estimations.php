@@ -423,6 +423,10 @@ if ( ! function_exists( 'woocommerce_cart_estimations_pdf_request' ) ) {
 		if ( $response ) :
 			if ( str_contains( $response, 'http' ) ) :
 				$options = get_option( 'woocommerce_cart_estimations_options' );
+				if ( boolval( $options['create_order_after_chekout'] ) ){
+					// Create order.
+					woocomerce_cart_estimations_create_order_from_cart();
+				}
 				if ( boolval( $options['empty_cart_after_chekout'] ) ){
 					// Remove all cart items.
 					WC()->cart->empty_cart();
@@ -532,5 +536,50 @@ if ( ! function_exists( 'woocommerce_cart_estimations_create_pdf' ) ) {
 			endif;
 		endif;
 		return false;
+	}
+}
+
+if ( !function_exists( 'woocomerce_cart_estimations_create_order_from_cart' ) ) {
+	/**
+	 * Function to create a Woocommerce order from current cart content.
+	 * 
+	 * @param string $customer_full_name Customer data.
+	 * @param string $customer_email Customer data.
+	 * @param string $customer_phone Customer data.
+	 * 
+	 * @return void
+	 */
+	function woocomerce_cart_estimations_create_order_from_cart( $customer_full_name = 'Anonimo', $customer_email = 'anonimo@mail.com', $customer_phone = '0000000' ) {
+		// Create a new instance of the WC_Order object
+		$order = wc_create_order();
+	
+		// Get cart contents
+		$cart = WC()->cart;
+		foreach ($cart->get_cart() as $cart_item_key => $cart_item) :
+			$product_id = $cart_item['product_id'];
+			$quantity = $cart_item['quantity'];
+			$product = wc_get_product($product_id);
+	
+			if ($product) :
+				$item = new WC_Order_Item_Product();
+				$item->set_variation_id($cart_item['variation_id']);
+				$item->set_product($product);
+				$item->set_quantity($quantity);
+				$item->set_total($product->get_price() * $quantity);
+				$order->add_item($item);
+			endif;
+		endforeach;
+	
+		// Create the order.
+		$order->save();
+	
+		// Calculate totals
+		$order->calculate_totals();
+		$order->save();
+	
+		$order->update_meta_data( '_billing_first_name', $customer_full_name );
+		$order->update_meta_data( '_billing_email', $customer_email );
+		$order->update_meta_data( '_billing_phone', $customer_phone );
+		$order->save();
 	}
 }
